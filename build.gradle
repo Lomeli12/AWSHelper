@@ -1,0 +1,54 @@
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+group = packageGroup
+archivesBaseName = archiveName
+version = releaseVersion
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+configurations {
+    shade
+    compile.extendsFrom shade
+}
+
+dependencies {
+    compileOnly "com.amazonaws:aws-lambda-java-core:${lambdaCore}"
+    compileOnly "com.amazonaws:aws-lambda-java-events:${lambdaEvent}"
+    compileOnly "com.amazonaws:aws-java-sdk:${awsSDK}"
+    compileOnly "junit:junit:${junit}"
+    compile "com.google.code.gson:gson:${gson}"
+    compile "javax.mail:mail:${jmail}"
+    compile "com.amazonaws:aws-java-sdk-dynamodb:${awsSDK}"
+    compile "com.amazonaws:aws-java-sdk-sns:${awsSDK}"
+}
+
+shadowJar {
+    classifier = 'shadow'
+}
+
+tasks.withType(Zip) { task ->
+    task.doLast {
+        ant.checksum algorithm: 'MD5', file: it.archivePath
+        ant.checksum algorithm: 'SHA1', file: it.archivePath
+    }
+}
+
+build {
+    dependsOn clean
+    dependsOn jar
+    dependsOn shadowJar
+
+    jar.mustRunAfter clean
+    shadowJar.mustRunAfter jar
+}
