@@ -20,6 +20,14 @@ public abstract class LambdaResponse {
         return Collections.unmodifiableMap(sessionAttributes);
     }
 
+    public void setSessionAttributes(String key, String value) {
+        sessionAttributes.put(key, value);
+    }
+
+    public void removeAttribute(String key) {
+        sessionAttributes.remove(key);
+    }
+
     @Override
     public String toString() {
         return String.format("{sessionAttributes=%s}", getSessionAttributes().toString());
