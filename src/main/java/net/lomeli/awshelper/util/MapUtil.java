@@ -29,9 +29,15 @@ public enum MapUtil {
                 if (value == null) continue;
                 if (baseTypes.contains(value.getClass()))
                     objectMap.put(f.getName(), value.toString());
-                else if (value.getClass().isEnum() || value instanceof Map || value instanceof Collection)
+                else if (value.getClass().isEnum())
                     objectMap.put(f.getName(), value);
-                else
+                else if (value instanceof Map) {
+                    if (((Map) value).size() < 1) continue;
+                    objectMap.put(f.getName(), value);
+                } else if (value instanceof Collection) {
+                    if (((Collection) value).size() < 1) continue;
+                    objectMap.put(f.getName(), value);
+                } else
                     objectMap.put(f.getName(), objectToMap(value));
             } catch (IllegalAccessException ex) {
                 String className = f.getDeclaringClass().getCanonicalName();
