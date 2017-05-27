@@ -8,7 +8,7 @@ public abstract class LambdaResponse {
     private Map<String, String> sessionAttributes;
 
     public LambdaResponse() {
-        this.sessionAttributes = new HashMap<String, String>();
+        this.sessionAttributes = new HashMap<>();
     }
 
     public LambdaResponse(Map<String, String> sessionAttributes) {

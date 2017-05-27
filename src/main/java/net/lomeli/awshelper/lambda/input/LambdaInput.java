@@ -11,7 +11,7 @@ public abstract class LambdaInput {
     private Map<String, String> sessionAttributes;
 
     public LambdaInput() {
-        this.sessionAttributes = new HashMap<String, String>();
+        this.sessionAttributes = new HashMap<>();
     }
 
     public LambdaInput(String messageVersion, String userId, InvokeSource invokeSource, Map<String, String> sessionAttributes) {

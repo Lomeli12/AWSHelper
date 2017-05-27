@@ -10,7 +10,7 @@ public class IntentInfo {
     private ConfirmStatus confirmationStatus;
 
     public IntentInfo(){
-        this.slots = new HashMap<String, String>();
+        this.slots = new HashMap<>();
     }
 
     public IntentInfo(String name, Map<String, String> slots, ConfirmStatus confirmationStatus, String inputTranscript) {
