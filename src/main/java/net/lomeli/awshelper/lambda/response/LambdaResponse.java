@@ -25,7 +25,7 @@ public abstract class LambdaResponse {
     }
 
     public void removeAttribute(String key) {
-        sessionAttributes.remove(key);
+        setSessionAttributes(key, null);
     }
 
     @Override
