@@ -23,7 +23,7 @@ public class SMSMessage {
 
     public SMSMessage(String phoneNumber, String message) throws InvalidPhoneNumberFormatException {
         this.phoneNumber = verifyNumber(phoneNumber);
-        if (this.phoneNumber.length() == 10) this.phoneNumber = "+1" + phoneNumber;
+        if (this.phoneNumber.length() == 10) this.phoneNumber = "+1" + this.phoneNumber;
         Matcher match = NUMBER_FORMAT.matcher(this.phoneNumber);
         if (!match.matches()) throw new InvalidPhoneNumberFormatException(this.phoneNumber);
         this.message = message;
@@ -32,6 +32,7 @@ public class SMSMessage {
     }
 
     String verifyNumber(String phoneNumber) {
+        phoneNumber = phoneNumber.trim().toLowerCase();
         if (MiscUtil.isStringNumeric(phoneNumber)) return phoneNumber;
         Matcher match = NUMBER_SYNTAX.matcher(phoneNumber);
         if (match.find()) return verifyNumber(phoneNumber.replaceAll("[-.()]", ""));
@@ -40,7 +41,7 @@ public class SMSMessage {
         Arrays.asList(separateNumbers).stream().filter(potentialNumber -> potentialNumber != null && !potentialNumber.isEmpty())
                 .forEach(potentialNumber -> {
             Object val = MiscUtil.strNums.get(potentialNumber.toLowerCase());
-            if (val instanceof Integer) newNumber.append((int) val);
+            if (val != null) newNumber.append(val.toString());
         });
         return newNumber.toString();
     }
