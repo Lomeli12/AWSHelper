@@ -8,26 +8,41 @@ import com.amazonaws.services.sns.model.PublishRequest;
 import com.amazonaws.services.sns.model.PublishResult;
 
 import java.nio.ByteBuffer;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.lomeli.awshelper.util.MiscUtil;
+
 public class SMSMessage {
     private static final Pattern NUMBER_FORMAT = Pattern.compile("^\\+?[1-9]\\d{1,14}$");
+    private static final Pattern NUMBER_SYNTAX = Pattern.compile("[-.()]");
     private Map<String, MessageAttributeValue> smsAttributes;
     private String message, phoneNumber;
     private AmazonSNSClient snsClient;
 
     public SMSMessage(String phoneNumber, String message) throws InvalidPhoneNumberFormatException {
-        Matcher match = NUMBER_FORMAT.matcher(phoneNumber);
-        if (!match.matches()) throw new InvalidPhoneNumberFormatException(phoneNumber);
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = verifyNumber(phoneNumber);
         if (this.phoneNumber.length() == 10) this.phoneNumber = "+1" + phoneNumber;
+        Matcher match = NUMBER_FORMAT.matcher(this.phoneNumber);
+        if (!match.matches()) throw new InvalidPhoneNumberFormatException(this.phoneNumber);
         this.message = message;
         this.snsClient = (AmazonSNSClient) AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
         this.smsAttributes = new HashMap<>();
+    }
+
+    String verifyNumber(String phoneNumber) {
+        if (MiscUtil.isStringNumeric(phoneNumber)) return phoneNumber;
+        Matcher match = NUMBER_SYNTAX.matcher(phoneNumber);
+        if (match.find()) return verifyNumber(phoneNumber.replaceAll("[-.()]", ""));
+        String[] separateNumbers = phoneNumber.split(" ");
+        StringBuilder newNumber = new StringBuilder();
+        Arrays.asList(separateNumbers).stream().filter(potentialNumber -> potentialNumber != null && !potentialNumber.isEmpty())
+                .forEach(potentialNumber -> {
+            Object val = MiscUtil.strNums.get(potentialNumber.toLowerCase());
+            if (val instanceof Integer) newNumber.append((int) val);
+        });
+        return newNumber.toString();
     }
 
     public SMSMessage addAttribute(SNSAttribute attribute, Object value) {
