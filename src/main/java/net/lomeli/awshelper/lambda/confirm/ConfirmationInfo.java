@@ -76,7 +76,11 @@ public abstract class ConfirmationInfo {
                     if (slot.getName().equals(confirmationInfo.getLastSlot()))
                         fullSlots = true;
                     if (prevSlot != null && !prevSlot.equals("")) {
-                        boolean flag = lexInput.getInputTranscript().equalsIgnoreCase("yes");
+                        String transcript = lexInput.getInputTranscript().toLowerCase().trim();
+                        boolean flag = transcript.contains("yes")
+                                || transcript.contains("ok")
+                                || transcript.contains("okay")
+                                || transcript.contains("whatever");
                         action.setSlot(prevSlot, flag ? "true" : "false");
                     }
                     prevSlot = slot.getName();
@@ -85,7 +89,11 @@ public abstract class ConfirmationInfo {
                 }
             }
         } else if (!finish) {
-            boolean flag = lexInput.getInputTranscript().equalsIgnoreCase("yes");
+            String transcript = lexInput.getInputTranscript().toLowerCase().trim();
+            boolean flag = transcript.contains("yes")
+                    || transcript.contains("ok")
+                    || transcript.contains("okay")
+                    || transcript.contains("whatever");
             if (prevSlot != null && !prevSlot.equals(""))
                 confirmationInfo.setSlotValue(prevSlot, flag ? "true" : "false");
             LexMessage message = new LexMessage(ContentType.PlainText, confirmationInfo.confirmSlots());
