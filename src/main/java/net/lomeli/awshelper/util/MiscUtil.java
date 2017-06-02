@@ -11,6 +11,7 @@ public class MiscUtil {
     // This is gonna be a PITA when it comes time to localize.
     static {
         strNums.put("zero", 0);
+        strNums.put("oh", 0);
         strNums.put("one", 1);
         strNums.put("two", 2);
         strNums.put("three", 3);
