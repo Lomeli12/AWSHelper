@@ -35,4 +35,8 @@ public class MiscUtil {
         }
         return true;
     }
+
+    public static boolean isStringNullOrEmpty(String str) {
+        return str == null || str.isEmpty();
+    }
 }
