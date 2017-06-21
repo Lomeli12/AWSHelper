@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import net.lomeli.awshelper.util.MiscUtil;
 
 public class SMSMessage {
-    private static final Pattern NUMBER_FORMAT = Pattern.compile("^\\+?[1-9]\\d{1,14}$");
+    private static final Pattern PHONE_NUMBER_FORMAT = Pattern.compile("^\\+?[1-9]\\d{1,14}$");
     private static final Pattern NUMBER_SYNTAX = Pattern.compile("[-.()]");
     private Map<String, MessageAttributeValue> smsAttributes;
     private String message, phoneNumber;
@@ -24,7 +24,7 @@ public class SMSMessage {
     public SMSMessage(String phoneNumber, String message) throws InvalidPhoneNumberFormatException {
         this.phoneNumber = verifyNumber(phoneNumber);
         if (this.phoneNumber.length() == 10) this.phoneNumber = "+1" + this.phoneNumber;
-        Matcher match = NUMBER_FORMAT.matcher(this.phoneNumber);
+        Matcher match = PHONE_NUMBER_FORMAT.matcher(this.phoneNumber);
         if (!match.matches()) throw new InvalidPhoneNumberFormatException(this.phoneNumber);
         this.message = message;
         this.snsClient = (AmazonSNSClient) AmazonSNSClientBuilder.standard().withRegion(Regions.US_EAST_1).build();
@@ -33,9 +33,9 @@ public class SMSMessage {
 
     String verifyNumber(String phoneNumber) {
         phoneNumber = phoneNumber.trim().toLowerCase();
-        if (MiscUtil.isStringNumeric(phoneNumber)) return phoneNumber;
         Matcher match = NUMBER_SYNTAX.matcher(phoneNumber);
         if (match.find()) return verifyNumber(phoneNumber.replaceAll("[-.()]", ""));
+        if (MiscUtil.isStringNumeric(phoneNumber)) return phoneNumber;
         String[] separateNumbers = phoneNumber.split(" ");
         StringBuilder newNumber = new StringBuilder();
         Arrays.asList(separateNumbers).stream().filter(potentialNumber -> potentialNumber != null && !potentialNumber.isEmpty())
