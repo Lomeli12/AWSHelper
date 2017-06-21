@@ -119,6 +119,8 @@ public abstract class ConfirmationInfo {
                 || str.contains("whatever")
                 || str.contains("yeah")
                 || str.contains("yep")
-                || str.contains("yup");
+                || str.contains("yup")
+                || str.contains("sure")
+                || str.contains("why not");
     }
 }
